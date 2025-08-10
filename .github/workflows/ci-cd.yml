@@ -168,7 +168,7 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
     
     - name: Run Trivy vulnerability scanner
-      uses: aquasecurity/trivy-action@v0.19
+      uses: aquasecurity/trivy-action@v0.18
       with:
         image-ref: ${{ secrets.DOCKER_USERNAME }}/${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }}
         format: 'sarif'
@@ -189,7 +189,7 @@ jobs:
       uses: actions/checkout@v4
     
     - name: Run Trivy vulnerability scanner on Dockerfile
-      uses: aquasecurity/trivy-action@v0.19
+      uses: aquasecurity/trivy-action@v0.18
       with:
         scan-type: 'fs'
         scan-ref: '.'
