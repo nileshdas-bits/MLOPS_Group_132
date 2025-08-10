@@ -60,7 +60,7 @@ class Config:
         with open(self.config_file, 'w') as f:
             json.dump(self.config, f, indent = 2)
 
-    def get(self, key: str, default: Any  =  None) - >  Any:
+    def get(self, key: str, default: Any = None) -> Any:
         """Get configuration value"""
         return self.config.get(key, default)
 
@@ -68,11 +68,11 @@ class Config:
         """Set configuration value"""
         self.config[key]  =  value
 
-    def get_all(self) - >  Dict[str, Any]:
+    def get_all(self) -> Dict[str, Any]:
         """Get all configuration values"""
         return self.config.copy()
 
-    def validate(self) - >  bool:
+    def validate(self) -> bool:
         """Validate configuration"""
         required_dirs  =  ["data_dir", "model_dir", "log_dir"]
 
