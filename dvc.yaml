@@ -1,0 +1,14 @@
+stages:
+  prepare_data:
+    cmd: python src/data/loader.py
+    deps:
+      - src/data/loader.py
+      - requirements.txt
+    outs:
+      - data/train.csv:
+          persist: true
+      - data/test.csv:
+          persist: true
+    metrics:
+      - data/dataset_info.json:
+          persist: true 

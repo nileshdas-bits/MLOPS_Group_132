@@ -8,6 +8,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 import logging
 from pathlib import Path
+import json
 
 # Configure logging
 logging.basicConfig(level = logging.INFO)
@@ -89,7 +90,25 @@ class IrisDataLoader:
         train_df.to_csv(output_path / "train.csv", index = False)
         test_df.to_csv(output_path / "test.csv", index = False)
 
+        # Save dataset information for DVC metrics
+        dataset_info = {
+            "train_samples": len(X_train),
+            "test_samples": len(X_test),
+            "features": len(self.feature_names),
+            "feature_names": self.feature_names,
+            "target_names": self.target_names,
+            "train_target_distribution": dict(zip(*np.unique(y_train, return_counts=True))),
+            "test_target_distribution": dict(zip(*np.unique(y_test, return_counts=True))),
+            "preprocessing": "StandardScaler applied to features",
+            "split_ratio": f"{self.test_size:.1%} test, {1-self.test_size:.1%} train",
+            "random_state": self.random_state
+        }
+        
+        with open(output_path / "dataset_info.json", 'w') as f:
+            json.dump(dataset_info, f, indent=2)
+
         logger.info(f"Data saved to {output_path}")
+        logger.info(f"Dataset info: {dataset_info}")
 
     def load_saved_data(self, data_dir = "data"):
         """

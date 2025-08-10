@@ -61,18 +61,22 @@ ERROR_COUNTER  =  Counter('iris_prediction_errors_total', 'Total number of predi
 
 # Pydantic models for request/response validation
 class IrisFeatures(BaseModel):
-    sepal_length: float  =  Field(..., ge = 0, le = 10, description = "Sepal length in cm")
-    sepal_width: float  =  Field(..., ge = 0, le = 10, description = "Sepal width in cm")
-    petal_length: float  =  Field(..., ge = 0, le = 10, description = "Petal length in cm")
-    petal_width: float  =  Field(..., ge = 0, le = 10, description = "Petal width in cm")
+    sepal_length: float = Field(..., ge=0, le=10, description="Sepal length in cm")
+    sepal_width: float = Field(..., ge=0, le=10, description="Sepal width in cm")
+    petal_length: float = Field(..., ge=0, le=10, description="Petal length in cm")
+    petal_width: float = Field(..., ge=0, le=10, description="Petal width in cm")
 
     @validator("sepal_length", "sepal_width", "petal_length", "petal_width")
     def validate_measurements(cls, v):
-        if v  <=  0:
+        if v <= 0:
             raise ValueError('Measurement must be positive')
-        if v  >  10:
+        if v > 10:
             raise ValueError('Measurement seems too large for Iris flowers')
         return v
+
+class RetrainRequest(BaseModel):
+    trigger: bool = Field(..., description="Set to true to trigger model retraining")
+    data_source: str = Field(default="current", description="Data source for retraining")
 
 class PredictionResponse(BaseModel):
     prediction: str
@@ -323,12 +327,53 @@ async def get_logs(limit: int  =  10):
 @app.get("/sample")
 async def get_sample_data():
     """Get sample data for testing"""
-    data_loader  =  IrisDataLoader()
-    sample  =  data_loader.get_sample_data()
+    data_loader = IrisDataLoader()
+    sample = data_loader.get_sample_data()
     return {
         "sample_data": sample,
         "description": "Sample Iris flower measurements for testing"
     }
+
+@app.post("/retrain")
+async def trigger_retraining(request: RetrainRequest):
+    """Trigger model retraining (Bonus feature)"""
+    if not request.trigger:
+        raise HTTPException(status_code=400, detail="Set trigger to true to start retraining")
+    
+    try:
+        logger.info("Model retraining triggered")
+        
+        # In a production environment, this would:
+        # 1. Add new data to the dataset
+        # 2. Trigger retraining pipeline
+        # 3. Update model registry
+        # 4. Deploy new model version
+        
+        # For demo purposes, we'll simulate the process
+        import subprocess
+        import threading
+        
+        def run_training():
+            try:
+                subprocess.run(["python", "src/models/train.py"], 
+                             capture_output=True, text=True, timeout=300)
+                logger.info("Model retraining completed successfully")
+            except Exception as e:
+                logger.error(f"Retraining failed: {e}")
+        
+        # Run training in background
+        thread = threading.Thread(target=run_training)
+        thread.start()
+        
+        return {
+            "status": "retraining_started",
+            "message": "Model retraining has been initiated in the background",
+            "timestamp": datetime.now().isoformat()
+        }
+        
+    except Exception as e:
+        logger.error(f"Failed to trigger retraining: {e}")
+        raise HTTPException(status_code=500, detail=f"Retraining failed: {str(e)}")
 
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
