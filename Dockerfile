@@ -13,13 +13,15 @@ ENV MLFLOW_TRACKING_URI=file:./mlruns
 RUN apt-get update && apt-get install -y \
     gcc \
     g++ \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements first for better caching
-COPY requirements.txt .
+COPY requirements.txt requirements-lock.txt ./
 
-# Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Install Python dependencies with better caching and dependency resolution
+RUN pip install --no-cache-dir --progress-bar on --timeout 300 --upgrade pip setuptools wheel && \
+    pip install --no-cache-dir --progress-bar on --timeout 300 --use-pep517 -r requirements-lock.txt
 
 # Copy source code
 COPY src/ ./src/

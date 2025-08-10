@@ -34,5 +34,8 @@ safety>=2.3.0
 # HTTP client for testing
 httpx>=0.25.0
 
+# Core dependencies (pinned to prevent conflicts)
+idna>=3.4,<4.0
+
 # Environment management
 python-dotenv>=1.0.0 
