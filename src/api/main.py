@@ -23,19 +23,20 @@ sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
 from data.loader import IrisDataLoader
 
+# Create logs directory first
+logs_dir = Path(os.path.join(os.path.dirname(__file__), "..", "..", "logs"))
+logs_dir.mkdir(exist_ok=True)
+
 # Configure logging
 logging.basicConfig(
-    level = logging.INFO,
-    format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers = [
-        logging.FileHandler(os.path.join(os.path.dirname(__file__), "..", "..", "logs", "api.log")),
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler(logs_dir / "api.log"),
         logging.StreamHandler()
     ]
 )
-logger  =  logging.getLogger(__name__)
-
-# Create logs directory
-Path(os.path.join(os.path.dirname(__file__), "..", "..", "logs")).mkdir(exist_ok = True)
+logger = logging.getLogger(__name__)
 
 # Initialize FastAPI app
 app  =  FastAPI(
@@ -102,10 +103,10 @@ feature_names  =  ['sepal_length', 'sepal_width', 'petal_length', 'petal_width']
 class PredictionLogger:
     """SQLite-based prediction logger"""
 
-    def __init__(self, db_path = None):
+    def __init__(self, db_path=None):
         if db_path is None:
-            db_path  =  os.path.join(os.path.dirname(__file__), '..', '..', 'logs', 'predictions.db')
-        self.db_path  =  db_path
+            db_path = logs_dir / "predictions.db"
+        self.db_path = db_path
         self.init_database()
 
     def init_database(self):
@@ -199,25 +200,25 @@ def load_model():
 
     try:
         # Load model
-        model_path  =  Path(os.path.join(os.path.dirname(__file__), '..', '..', 'models', 'best_model.pkl'))
+        model_path = Path(os.path.join(os.path.dirname(__file__), '..', '..', 'models', 'best_model.pkl'))
         if not model_path.exists():
             logger.error("Model file not found. Please train the model first.")
             return False
 
-        model  =  joblib.load(model_path)
+        model = joblib.load(model_path)
         logger.info("Model loaded successfully")
 
         # Load model info
-        info_path  =  Path(os.path.join(os.path.dirname(__file__), '..', '..', 'models', 'model_info.json'))
+        info_path = Path(os.path.join(os.path.dirname(__file__), '..', '..', 'models', 'model_info.json'))
         if info_path.exists():
             with open(info_path, 'r') as f:
-                model_info  =  json.load(f)
+                model_info = json.load(f)
             logger.info(f"Model info loaded: {model_info}")
 
         # Initialize scaler (same as used in training)
-        data_loader  =  IrisDataLoader()
-        _, _, _, _, _, _  =  data_loader.load_data()
-        scaler  =  data_loader.scaler
+        data_loader = IrisDataLoader()
+        _, _, _, _, _, _ = data_loader.load_data()
+        scaler = data_loader.scaler
 
         return True
 
