@@ -91,17 +91,21 @@ class IrisDataLoader:
         test_df.to_csv(output_path / "test.csv", index = False)
 
         # Save dataset information for DVC metrics
+        # Convert numpy types to Python native types for JSON serialization
+        train_dist = dict(zip(*np.unique(y_train, return_counts=True)))
+        test_dist = dict(zip(*np.unique(y_test, return_counts=True)))
+        
         dataset_info = {
-            "train_samples": len(X_train),
-            "test_samples": len(X_test),
-            "features": len(self.feature_names),
+            "train_samples": int(len(X_train)),
+            "test_samples": int(len(X_test)),
+            "features": int(len(self.feature_names)),
             "feature_names": self.feature_names,
-            "target_names": self.target_names,
-            "train_target_distribution": dict(zip(*np.unique(y_train, return_counts=True))),
-            "test_target_distribution": dict(zip(*np.unique(y_test, return_counts=True))),
+            "target_names": self.target_names.tolist() if hasattr(self.target_names, 'tolist') else self.target_names,
+            "train_target_distribution": {int(k): int(v) for k, v in train_dist.items()},
+            "test_target_distribution": {int(k): int(v) for k, v in test_dist.items()},
             "preprocessing": "StandardScaler applied to features",
-            "split_ratio": f"{self.test_size:.1%} test, {1-self.test_size:.1%} train",
-            "random_state": self.random_state
+            "split_ratio": f"{1-self.test_size:.1%} train, {self.test_size:.1%} test",
+            "random_state": int(self.random_state)
         }
         
         with open(output_path / "dataset_info.json", 'w') as f:
