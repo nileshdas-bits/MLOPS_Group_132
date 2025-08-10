@@ -47,13 +47,13 @@ class TestIrisDataLoader:
         assert len(y_train) == X_train.shape[0]
         assert len(y_test) == X_test.shape[0]
         
-        # Check feature names
-        expected_features = ['sepal_length', 'sepal_width', 'petal_length', 'petal_width']
+        # Check feature names (sklearn returns names with units)
+        expected_features = ['sepal length (cm)', 'sepal width (cm)', 'petal length (cm)', 'petal width (cm)']
         assert feature_names == expected_features
         
-        # Check target names
-        expected_targets = ['setosa', 'versicolor', 'virginica']
-        assert target_names == expected_targets
+        # Check target names (numpy array comparison)
+        expected_targets = np.array(['setosa', 'versicolor', 'virginica'])
+        np.testing.assert_array_equal(target_names, expected_targets)
         
         # Check that data is scaled
         assert np.allclose(X_train.mean(axis=0), 0, atol=1e-10)
@@ -72,11 +72,11 @@ class TestIrisDataLoader:
         # Load saved data
         X_train_loaded, X_test_loaded, y_train_loaded, y_test_loaded, _, _ = self.loader.load_saved_data(str(self.test_data_dir))
         
-        # Check data consistency
-        np.testing.assert_array_equal(X_train, X_train_loaded)
-        np.testing.assert_array_equal(X_test, X_test_loaded)
-        np.testing.assert_array_equal(y_train, y_train_loaded)
-        np.testing.assert_array_equal(y_test, y_test_loaded)
+        # Check data consistency (use allclose for floating-point precision)
+        np.testing.assert_allclose(X_train, X_train_loaded, rtol=1e-10, atol=1e-10)
+        np.testing.assert_allclose(X_test, X_test_loaded, rtol=1e-10, atol=1e-10)
+        np.testing.assert_array_equal(y_train, y_train_loaded)  # Integers should be exact
+        np.testing.assert_array_equal(y_test, y_test_loaded)    # Integers should be exact
     
     def test_get_sample_data(self):
         """Test sample data generation"""
