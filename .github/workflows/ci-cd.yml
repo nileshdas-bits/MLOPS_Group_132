@@ -99,6 +99,10 @@ jobs:
         ls -la | head -20
         echo "Total files:"
         find . -type f | wc -l
+        echo "Requirements file exists:"
+        ls -la requirements.txt || echo "requirements.txt not found"
+        echo "Dockerfile exists:"
+        ls -la Dockerfile || echo "Dockerfile not found"
     
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3

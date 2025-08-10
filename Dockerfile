@@ -17,11 +17,11 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements first for better caching
-COPY requirements.txt requirements-lock.txt ./
+COPY requirements.txt ./
 
 # Install Python dependencies with better caching and dependency resolution
 RUN pip install --no-cache-dir --progress-bar on --timeout 300 --upgrade pip setuptools wheel && \
-    pip install --no-cache-dir --progress-bar on --timeout 300 --use-pep517 -r requirements-lock.txt
+    pip install --no-cache-dir --progress-bar on --timeout 300 -r requirements.txt
 
 # Copy source code
 COPY src/ ./src/
