@@ -27,6 +27,10 @@ pytest-cov>=4.1.0
 flake8>=6.1.0
 mypy>=1.7.0
 
+# Security tools
+bandit>=1.7.5
+safety>=2.3.0
+
 # HTTP client for testing
 httpx>=0.25.0
 
