@@ -1,101 +1,104 @@
 {
-  "dashboard": {
-    "id": null,
-    "title": "Iris MLOps Dashboard",
-    "tags": ["mlops", "iris", "monitoring"],
-    "style": "dark",
-    "timezone": "browser",
-    "panels": [
-      {
-        "id": 1,
-        "title": "Total Predictions",
-        "type": "stat",
-        "targets": [
-          {
-            "expr": "iris_predictions_total",
-            "legendFormat": "Total Predictions"
+  "id": null,
+  "title": "Iris MLOps Dashboard",
+  "tags": ["mlops", "iris", "monitoring"],
+  "style": "dark",
+  "timezone": "browser",
+  "panels": [
+    {
+      "id": 1,
+      "title": "Total Predictions",
+      "type": "stat",
+      "targets": [
+        {
+          "expr": "iris_predictions_total",
+          "legendFormat": "Total Predictions",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "displayMode": "basic"
           }
-        ],
-        "fieldConfig": {
-          "defaults": {
-            "color": {
-              "mode": "palette-classic"
-            },
-            "custom": {
-              "displayMode": "basic"
-            }
-          }
-        },
-        "gridPos": {
-          "h": 8,
-          "w": 6,
-          "x": 0,
-          "y": 0
         }
       },
-      {
-        "id": 2,
-        "title": "Prediction Duration",
-        "type": "graph",
-        "targets": [
-          {
-            "expr": "rate(iris_prediction_duration_seconds_sum[5m]) / rate(iris_prediction_duration_seconds_count[5m])",
-            "legendFormat": "Average Duration"
-          }
-        ],
-        "fieldConfig": {
-          "defaults": {
-            "unit": "s"
-          }
-        },
-        "gridPos": {
-          "h": 8,
-          "w": 12,
-          "x": 6,
-          "y": 0
-        }
-      },
-      {
-        "id": 3,
-        "title": "Prediction Errors",
-        "type": "stat",
-        "targets": [
-          {
-            "expr": "iris_prediction_errors_total",
-            "legendFormat": "Total Errors"
-          }
-        ],
-        "fieldConfig": {
-          "defaults": {
-            "color": {
-              "mode": "thresholds"
-            },
-            "thresholds": {
-              "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                },
-                {
-                  "color": "red",
-                  "value": 1
-                }
-              ]
-            }
-          }
-        },
-        "gridPos": {
-          "h": 8,
-          "w": 6,
-          "x": 18,
-          "y": 0
-        }
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 0,
+        "y": 0
       }
-    ],
-    "time": {
-      "from": "now-1h",
-      "to": "now"
     },
-    "refresh": "10s"
-  }
+    {
+      "id": 2,
+      "title": "Prediction Duration",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "rate(iris_prediction_duration_seconds_sum[5m]) / rate(iris_prediction_duration_seconds_count[5m])",
+          "legendFormat": "Average Duration",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        }
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 6,
+        "y": 0
+      }
+    },
+    {
+      "id": 3,
+      "title": "Prediction Errors",
+      "type": "stat",
+      "targets": [
+        {
+          "expr": "iris_prediction_errors_total",
+          "legendFormat": "Total Errors",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          }
+        }
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 18,
+        "y": 0
+      }
+    }
+  ],
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "refresh": "10s",
+  "schemaVersion": 30,
+  "version": 1
 } 
