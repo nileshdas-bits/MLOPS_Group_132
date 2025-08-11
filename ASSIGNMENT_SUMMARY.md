@@ -22,7 +22,7 @@ Our MLOps pipeline implements a complete end-to-end solution for the Iris classi
          ▼                       ▼                       ▼
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
 │   CI/CD Pipeline│    │   Container     │    │   Deployment    │
-│ (GitHub Actions)│    │   (Docker)      │    │   (Local/EC2)   │
+│ (GitHub Actions)│    │   (Docker)      │    │   (Local)       │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
 ```
 
